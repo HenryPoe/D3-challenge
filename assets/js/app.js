@@ -61,12 +61,31 @@ d3.csv("assets/data/data.csv").then(function(data) {
         .attr("cy", d => y(d.healthcare))
         .attr("r", 15)
         .style("fill", "#69b3a2")
-    chartEnter.append("text")
+    var circlesGroup = chartEnter.append("text")
         .attr("x", d => x(d.poverty))
         .attr("y", d => y(d.healthcare))
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .text(d => d.abbr)
+
+    // Step 1: Append tooltip div
+    var toolTip = d3.select("body")
+      .append("div")
+      .classed("tooltip", true);
+
+    // Step 2: Create "mouseover" event listener to display tooltip
+    circlesGroup.on("mouseover", function(d) {
+        toolTip.style("display", "block")
+            .html(`<strong>${d.state}<hr>Poverty: ${d.poverty}<hr>Healthcare: ${d.healthcare}`)
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY + "px");
+
+    })
+      // Step 3: Create "mouseout" event listener to hide tooltip
+      .on("mouseout", function() {
+        toolTip.style("display", "none");
+      });
+
 
     // Add axis Labels
     svg.append("text")
